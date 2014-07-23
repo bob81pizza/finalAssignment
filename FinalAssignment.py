@@ -15,8 +15,8 @@ class PythonTesting(unittest.TestCase):
 
 
 	'''
-	Navigate to the search page where no items are found. Try to click the search button again
-	with no items in the search box. An pop-up error box should be displayed
+	Test to ensure that when the search button is pushed with an empty search box, a
+	pop-up error is displayed.
 	'''
 	# def testNoInputSearchPage(self):
 	# 	driver = self.driver
@@ -32,8 +32,7 @@ class PythonTesting(unittest.TestCase):
 
 
 	'''
-	Navigate to the main page. Enter an item in the search box and use the 'Enter' key to
-	initiage the search. Check to see that the URL has changed due to using the 'Enter' key
+	Test to ensure that pressing the Return key initiates a search.
 	'''
 	# def testSearchByEnter(self):
 	# 	driver = self.driver
@@ -45,9 +44,8 @@ class PythonTesting(unittest.TestCase):
 
 
 	'''
-	Navigate to the main page. Enter the word 'sock' in the search box and use the 'Enter'
-	key to initiate the search. Check to ensure that the first match has the word 'sock'
-	in it.
+	Test to ensure that when searching for a word, results that display have that word
+	in them.
 	'''
 	# def testSearchSock(self):
 	# 	driver = self.driver
@@ -59,12 +57,9 @@ class PythonTesting(unittest.TestCase):
 	# 	self.assertTrue('sock' in result.text.lower())
 
 	'''
-	Navigate to the main page. Enter a combination of letters and numbers in the searh box.
-	Once the search has been initiated, check to see that the URL has changed.
-	Clear the search box and check special characters only. An alert should display since only
-	special characters are not allowed.
-	Clear the search box again and search for just numbers. This should open a URL that is
-	different than the first one.
+	Test different inputs to the search box. Numbers and letters should work.
+	Special characters only should display an error pop-up.
+	Just numbers should work.
 	'''
 	# def testDifferentSearchInputs(self):
 	# 	driver = self.driver
@@ -102,8 +97,8 @@ class PythonTesting(unittest.TestCase):
 
 
 	'''
-	Navigate to main page. Enter gibberish text into searh box and use the 'Enter' key
-	to search for it. Check to ensure that 'no results' are returned.
+	Test to ensure that when a product is not found, the text 'no results' is displayed
+	on the page
 	'''
 	# def testNotFound(self):
 	# 	driver = self.driver
@@ -116,8 +111,8 @@ class PythonTesting(unittest.TestCase):
 
 
 	'''
-	Navigate to the main page. Search for a specific product number of a suit.
-	Ensure that the product page is directly displayed.
+	Test to ensure that searching for a specific valid product number brings up the
+	product page instead of search results.
 	'''
 	# def testProductNumber(self):
 	# 	driver = self.driver
@@ -129,8 +124,7 @@ class PythonTesting(unittest.TestCase):
 	# 	self.assertTrue('Milbank' in result.text)
 
 	'''
-	Navigate to the main page. Searh for 'sock.' Results should be returned.
-	Click on the 'x' in the search box. No text should appear in search box.
+	Test to ensure that when clicking the 'x' to clear the box, the box is actually cleared.
 	'''
 	# def testClearButton(self):
 	# 	driver = self.driver
@@ -141,15 +135,16 @@ class PythonTesting(unittest.TestCase):
 
 	# 	searchBox = driver.find_element_by_id("keyword-search-input")
 	# 	clearButton = driver.find_element_by_id("keyword-search-reset")
-	# 	clearButton.click()
 
+	# 	#Clear the box and ensure it is blank
+	# 	clearButton.click()
 	# 	self.assertEqual(searchBox.text, "")
 
 
 	'''
-	Navigate to main page. Check to see that entering 'jea' navigating away and
-	then back, and using the arrow keys will move through the list of lookahead
-	terms.
+	Test to ensure that when typing in a search term, a list of predictive
+	terms are available to be chosen. When moving through the list and pressing
+	Return, the search term in the list is searched for.
 	'''
 	# def testSearchLookahead(self):
 	# 	driver = self.driver
@@ -169,9 +164,40 @@ class PythonTesting(unittest.TestCase):
 
 	# 	self.assertTrue("keyword=jeans" in driver.current_url)
 
+	'''
+	Test to ensure that the position of the search box is the same across multiple pages.
+	'''
+	def testSearchPositioning(self):
+		driver = self.driver
+		driver.get("http://shop.nordstrom.com")
 
+		locationList = []
 
+		searchElement = driver.find_element_by_id("keyword-search-input")
+		location = searchElement.location
+		locationList.append(location)
 
+		driver.get("http://shop.nordstrom.com/c/shoes-shop?dept=8000001&origin=topnav")
+		searchElement = driver.find_element_by_id("keyword-search-input")
+		location = searchElement.location
+		locationList.append(location)
+
+		driver.get("http://shop.nordstrom.com/c/juniors-shop?dept=8000001&origin=topnav")
+		searchElement = driver.find_element_by_id("keyword-search-input")
+		location = searchElement.location
+		locationList.append(location)				
+
+		driver.get("http://shop.nordstrom.com/c/women?dept=8000001&origin=topnav")
+		searchElement = driver.find_element_by_id("keyword-search-input")
+		location = searchElement.location
+		locationList.append(location)	
+
+		same = True		
+		for i in range(len(locationList)-1):
+			if locationList[i]!=locationList[i+1]:
+				same=False
+
+		self.assertTrue(same)
 
 
 	def tearDown(self):
